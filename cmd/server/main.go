@@ -7,8 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/btk-hackathon-24-debug-duo/project-setup/internal/api"
-	db "github.com/btk-hackathon-24-debug-duo/project-setup/pkg/database"
+	db "github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/pkg/database"
+
+	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/api"
 	"github.com/joho/godotenv"
 )
 

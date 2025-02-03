@@ -3,7 +3,7 @@ package api
 import (
 	"database/sql"
 
-	"github.com/btk-hackathon-24-debug-duo/project-setup/internal/middleware"
+	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -22,8 +22,8 @@ func (r *Router) NewRouter() *mux.Router {
 
 	router.Use(middleware.CorsMiddleware)
 
-	protected := router.PathPrefix("/api").Subrouter()
-	protected.Use(middleware.EnsureValidToken)
+	//protected := router.PathPrefix("").Subrouter()
+	//	protected.Use(middleware.EnsureValidToken)
 
 	return router
 }
