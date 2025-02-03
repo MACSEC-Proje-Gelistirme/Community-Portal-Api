@@ -1,4 +1,4 @@
-module github.com/btk-hackathon-24-debug-duo/project-setup
+module github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api
 
 go 1.23.1
 

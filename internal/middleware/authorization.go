@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/btk-hackathon-24-debug-duo/project-setup/internal/permissions"
-	"github.com/btk-hackathon-24-debug-duo/project-setup/internal/repository"
-	"github.com/btk-hackathon-24-debug-duo/project-setup/pkg/utils"
+	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/permissions"
+	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/repository"
+	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/pkg/utils"
 )
 
 type AuthorizationService struct {
