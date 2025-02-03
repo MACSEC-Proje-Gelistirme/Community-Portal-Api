@@ -24,18 +24,7 @@ func (a *AuthorizationService) GetUserRole(clubID, userID string) (*permissions.
 		return nil, err
 	}
 
-	switch roleName {
-	case "admin":
-		return &permissions.AdminRole, nil
-	case "social_admin":
-		return &permissions.SocialAdminRole, nil
-	case "mail_admin":
-		return &permissions.MailAdminRole, nil
-	case "club_admin":
-		return &permissions.ClubAdminRole, nil
-	default:
-		return nil, nil
-	}
+	return permissions.GetRoleWithRoleName(roleName), nil
 }
 
 func (a *AuthorizationService) HasPermission(role *permissions.Role, permission permissions.Permission) bool {
@@ -64,13 +53,8 @@ func checkPermission(authService *AuthorizationService, permission permissions.P
 			}
 
 			role, err := authService.GetUserRole(clubID, userID)
-			if err != nil {
-				utils.JSONError(w, http.StatusInternalServerError, "Internal server error")
-				return
-			}
-
-			if role == nil {
-				utils.JSONError(w, http.StatusUnauthorized, "Unauthorized")
+			if err != nil || role == nil {
+				utils.JSONError(w, http.StatusInternalServerError, "Unable to get user role")
 				return
 			}
 
