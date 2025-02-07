@@ -20,20 +20,13 @@ func EnsureValidToken(next http.Handler) http.Handler {
 
 		tokenClaims, err := decodeJWTPayload(token)
 		if err != nil {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
 			return
 		}
 
-		//check tokenclaims is valid
 		exp, ok := tokenClaims["exp"].(float64)
 		if !ok || int64(exp) < time.Now().Unix() {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		id, ok := tokenClaims["user"].(map[string]interface{})["id"]
-		if !ok || id == "" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			http.Error(w, "Unauthorized: Token expired", http.StatusUnauthorized)
 			return
 		}
 
@@ -44,7 +37,6 @@ func EnsureValidToken(next http.Handler) http.Handler {
 	})
 }
 
-// extractToken extracts the token from the Authorization header
 func extractToken(r *http.Request) string {
 	authHeader := r.Header.Get("Authorization")
 	if strings.HasPrefix(authHeader, "Bearer ") {
@@ -64,7 +56,7 @@ func decodeJWTPayload(tokenString string) (map[string]interface{}, error) {
 		return nil, fmt.Errorf("error decoding payload: %v", err)
 	}
 
-	var claims map[string]interface{}
+	var claims map[string]any
 	err = json.Unmarshal(payload, &claims)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshaling JSON: %v", err)

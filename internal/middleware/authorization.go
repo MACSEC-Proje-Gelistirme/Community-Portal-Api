@@ -31,7 +31,7 @@ func (a *AuthorizationService) HasPermission(role *permissions.Role, permission 
 	return role.HasPermission(permission)
 }
 
-func checkPermission(authService *AuthorizationService, permission permissions.Permission) func(http.Handler) http.Handler {
+func CheckPermission(authService *AuthorizationService, permission permissions.Permission) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			claims, ok := utils.GetTokenClaims(r)
