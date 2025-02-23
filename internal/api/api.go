@@ -28,5 +28,6 @@ func (r *Router) NewRouter() *mux.Router {
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.EnsureValidToken)
 
+
 	return router
 }
