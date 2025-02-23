@@ -14,6 +14,7 @@ type User struct {
 }
 
 type CreateUserPayload struct {
+	UserID          string `json:"id"`
 	FirstName       string `json:"first_name"`
 	LastName        string `json:"last_name"`
 	SchoolNumber    string `json:"school_number"`

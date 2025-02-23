@@ -9,18 +9,6 @@ import (
 )
 
 func (ro *Router) CreateUser(w http.ResponseWriter, r *http.Request) {
-	claims, ok := utils.GetTokenClaims(r)
-	if !ok {
-		utils.JSONError(w, http.StatusUnauthorized, "Token claims not found")
-		return
-	}
-
-	userID, ok := utils.GetUserIDFromClaims(claims)
-	if !ok {
-		utils.JSONError(w, http.StatusUnauthorized, "User ID not found in token claims")
-		return
-	}
-
 	var payload models.CreateUserPayload
 	if err := utils.DecodeRequestBody(r, &payload); err != nil {
 		utils.JSONError(w, http.StatusBadRequest, err.Error())
@@ -28,7 +16,7 @@ func (ro *Router) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := models.User{
-		UserID:               userID,
+		UserID:               payload.UserID,
 		FirstName:            payload.FirstName,
 		LastName:             payload.LastName,
 		Email:                payload.Email,
