@@ -3,9 +3,9 @@ package api
 import (
 	"net/http"
 
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/models"
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/repository"
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/pkg/utils"
+	"api/internal/models"
+	"api/internal/repository"
+	"api/pkg/utils"
 )
 
 func (ro *Router) CreateUser(w http.ResponseWriter, r *http.Request) {

@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/permissions"
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/repository"
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/pkg/utils"
+	"api/internal/permissions"
+	"api/internal/repository"
+	"api/pkg/utils"
 )
 
 type AuthorizationService struct {
