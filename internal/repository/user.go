@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/models"
+	"api/internal/models"
 )
 
 type UserRepository struct {

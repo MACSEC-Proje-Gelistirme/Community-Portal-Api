@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api/internal/middleware"
+	"api/internal/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -27,7 +27,6 @@ func (r *Router) NewRouter() *mux.Router {
 
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.EnsureValidToken)
-
 
 	return router
 }
