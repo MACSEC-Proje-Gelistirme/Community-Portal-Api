@@ -15,8 +15,20 @@ func (ro *Router) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "claims not found")
+		return
+	}
+
+	userID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "user id not found")
+		return
+	}
+
 	user := models.User{
-		UserID:               payload.UserID,
+		UserID:               userID,
 		FirstName:            payload.FirstName,
 		LastName:             payload.LastName,
 		Email:                payload.Email,

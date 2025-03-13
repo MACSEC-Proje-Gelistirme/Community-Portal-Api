@@ -18,7 +18,7 @@ func newAuthorizationService(db *sql.DB) *AuthorizationService {
 }
 
 func (a *AuthorizationService) GetUserRole(clubID, userID string) (*permissions.Role, error) {
-	clubRolesRepository := repository.NewClubUserRolesRepository(a.db)
+	clubRolesRepository := repository.NewClubUserRepository(a.db)
 	roleName, err := clubRolesRepository.GetUserRole(clubID, userID)
 	if err != nil {
 		return nil, err
