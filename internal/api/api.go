@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"api/internal/middleware"
+	"api/internal/permissions"
+
 	"github.com/gorilla/mux"
 )
 
@@ -20,6 +22,7 @@ func NewRouter(db *sql.DB) *Router {
 
 func (r *Router) NewRouter() *mux.Router {
 	router := mux.NewRouter()
+	authService := middleware.NewAuthorizationService(r.db)
 
 	router.Use(middleware.CorsMiddleware)
 
@@ -28,6 +31,13 @@ func (r *Router) NewRouter() *mux.Router {
 
 	protected.HandleFunc("/user", r.CreateUser).Methods(http.MethodPost, http.MethodOptions)
 	protected.HandleFunc("/club-user", r.GetClubWithUserID).Methods(http.MethodGet, http.MethodOptions)
+
+	// Club endpoints
+	protected.HandleFunc("/club", r.CreateClub).Methods(http.MethodPost, http.MethodOptions)
+	protected.HandleFunc("/clubs", r.ListClubs).Methods(http.MethodGet, http.MethodOptions)
+	protected.HandleFunc("/club", r.GetClub).Methods(http.MethodGet, http.MethodOptions)
+	protected.HandleFunc("/club", middleware.CheckPermission(authService, permissions.ClubUpdatePermission)(r.UpdateClub)).Methods(http.MethodPut, http.MethodOptions)
+	protected.HandleFunc("/club", middleware.CheckPermission(authService, permissions.ClubDeletePermission)(r.DeleteClub)).Methods(http.MethodDelete, http.MethodOptions)
 
 	return router
 }

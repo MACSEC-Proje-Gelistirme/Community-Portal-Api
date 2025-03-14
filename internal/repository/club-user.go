@@ -3,6 +3,7 @@ package repository
 import (
 	"api/internal/models"
 	"database/sql"
+	"time"
 )
 
 type ClubUserRepository struct {
@@ -60,4 +61,30 @@ func (c *ClubUserRepository) GetClubsWithUserID(userID string) ([]models.Club, e
 	}
 
 	return clubs, nil
+}
+
+func (c *ClubUserRepository) CreateClubRole(clubID string, userID string, role string) (bool, error) {
+	_, err := c.db.Exec(`
+		INSERT INTO club_roles (user_id, club_id, role, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $4)`,
+		userID, clubID, role, time.Now(),
+	)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func (c *ClubUserRepository) DeleteAllClubRoles(clubID string) error {
+	stmt := `
+		DELETE FROM club_roles WHERE club_id = $1 
+	`
+	_, err := c.db.Exec(stmt, clubID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

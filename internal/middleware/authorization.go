@@ -13,7 +13,7 @@ type AuthorizationService struct {
 	db *sql.DB
 }
 
-func newAuthorizationService(db *sql.DB) *AuthorizationService {
+func NewAuthorizationService(db *sql.DB) *AuthorizationService {
 	return &AuthorizationService{db: db}
 }
 
@@ -31,8 +31,8 @@ func (a *AuthorizationService) HasPermission(role *permissions.Role, permission 
 	return role.HasPermission(permission)
 }
 
-func CheckPermission(authService *AuthorizationService, permission permissions.Permission) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
+func CheckPermission(authService *AuthorizationService, permission permissions.Permission) func(http.HandlerFunc) http.HandlerFunc {
+	return func(next http.HandlerFunc) http.HandlerFunc {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			claims, ok := utils.GetTokenClaims(r)
 			if !ok {

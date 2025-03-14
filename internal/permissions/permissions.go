@@ -50,6 +50,27 @@ var (
 			EventWritePermission:        true,
 		},
 	}
+	OwnerRole = Role{
+		Name: "owner",
+		Permissions: Permissions{
+			SocialMediaDeletePermission: true,
+			SocialMediaReadPermission:   true,
+			SocialMediaUpdatePermission: true,
+			SocialMediaWritePermission:  true,
+			MailDeletePermission:        true,
+			MailReadPermission:          true,
+			MailUpdatePermission:        true,
+			MailWritePermission:         true,
+			ClubDeletePermission:        true,
+			ClubReadPermission:          true,
+			ClubUpdatePermission:        true,
+			ClubWritePermission:         true,
+			EventDeletePermission:       true,
+			EventReadPermission:         true,
+			EventUpdatePermission:       true,
+			EventWritePermission:        true,
+		},
+	}
 	SocialAdminRole = Role{
 		Name: "social_admin",
 		Permissions: Permissions{
@@ -85,6 +106,8 @@ func (r *Role) HasPermission(p Permission) bool {
 
 func GetRoleWithRoleName(roleName string) *Role {
 	switch roleName {
+	case "owner":
+		return &OwnerRole
 	case "admin":
 		return &AdminRole
 	case "social_admin":
