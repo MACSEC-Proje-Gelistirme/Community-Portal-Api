@@ -1,5 +1,3 @@
-github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api v0.0.0-20250223103120-43bfaf7043cf h1:p2ruIH8v0j4E4IvRm43WoiPX10q+OR6w0+ofTffk+uQ=
-github.com/MACSEC-Proje-Gelistirme/Community-Portal-Api v0.0.0-20250223103120-43bfaf7043cf/go.mod h1:f26YNEfxRIW8DT6fZ/442IfM7CkZIhy+aqfDbjEpol4=
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
 github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=

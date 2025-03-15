@@ -9,14 +9,8 @@ import (
 	"api/pkg/utils"
 )
 
-type CreateClubPayload struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Email       string `json:"email"`
-}
-
 func (ro *Router) CreateClub(w http.ResponseWriter, r *http.Request) {
-	var payload CreateClubPayload
+	var payload models.CreateClubPayload
 	if err := utils.DecodeRequestBody(r, &payload); err != nil {
 		utils.JSONError(w, http.StatusBadRequest, err.Error())
 		return
@@ -79,27 +73,7 @@ func (ro *Router) GetClub(w http.ResponseWriter, r *http.Request) {
 func (ro *Router) UpdateClub(w http.ResponseWriter, r *http.Request) {
 	clubID := r.Header.Get("club-id")
 
-	claims, ok := utils.GetTokenClaims(r)
-	if !ok {
-		utils.JSONError(w, http.StatusBadRequest, "claims not found")
-		return
-	}
-
-	userID, ok := utils.GetUserIDFromClaims(claims)
-	if !ok {
-		utils.JSONError(w, http.StatusBadRequest, "user id not found")
-		return
-	}
-
-	// Check if user has admin role for this club
-	clubUserRepository := repository.NewClubUserRepository(ro.db)
-	role, err := clubUserRepository.GetUserRole(clubID, userID)
-	if err != nil || (role != permissions.OwnerRole.Name && role != permissions.AdminRole.Name) {
-		utils.JSONError(w, http.StatusForbidden, "unauthorized: requires admin role")
-		return
-	}
-
-	var payload CreateClubPayload
+	var payload models.CreateClubPayload
 	if err := utils.DecodeRequestBody(r, &payload); err != nil {
 		utils.JSONError(w, http.StatusBadRequest, err.Error())
 		return
@@ -113,7 +87,7 @@ func (ro *Router) UpdateClub(w http.ResponseWriter, r *http.Request) {
 	}
 
 	clubRepository := repository.NewClubRepository(ro.db)
-	err = clubRepository.UpdateClub(club)
+	err := clubRepository.UpdateClub(club)
 	if err != nil {
 		utils.JSONError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -125,28 +99,16 @@ func (ro *Router) UpdateClub(w http.ResponseWriter, r *http.Request) {
 func (ro *Router) DeleteClub(w http.ResponseWriter, r *http.Request) {
 	clubID := r.Header.Get("club-id")
 
-	claims, ok := utils.GetTokenClaims(r)
-	if !ok {
-		utils.JSONError(w, http.StatusBadRequest, "claims not found")
-		return
-	}
-
-	userID, ok := utils.GetUserIDFromClaims(claims)
-	if !ok {
-		utils.JSONError(w, http.StatusBadRequest, "user id not found")
-		return
-	}
-
-	// Check if user has admin role for this club
 	clubUserRepository := repository.NewClubUserRepository(ro.db)
-	role, err := clubUserRepository.GetUserRole(clubID, userID)
-	if err != nil || (role != permissions.OwnerRole.Name && role != permissions.AdminRole.Name) {
-		utils.JSONError(w, http.StatusForbidden, "unauthorized: requires admin role")
+
+	userRole := r.Context().Value("userRole")
+
+	if userRole != permissions.OwnerRole.Name {
+		utils.JSONError(w, http.StatusBadRequest, "Only owner can delete club")
 		return
 	}
 
-	//delete all users role linked to club
-	err = clubUserRepository.DeleteAllClubRoles(clubID)
+	err := clubUserRepository.DeleteAllClubRoles(clubID)
 	if err != nil {
 		utils.JSONError(w, http.StatusInternalServerError, err.Error())
 		return

@@ -11,3 +11,8 @@ type Club struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+type CreateClubPayload struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Email       string `json:"email"`
+}

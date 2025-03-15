@@ -19,6 +19,10 @@ const (
 	EventWritePermission        Permission = "event:write"
 	EventDeletePermission       Permission = "event:delete"
 	EventUpdatePermission       Permission = "event:update"
+	AddClubUser                 Permission = "user:write"
+	DeleteClubUser              Permission = "user:delete"
+	UpdateClubUser              Permission = "user:update"
+	ReadClubUser                Permission = "user:read"
 )
 
 type Permissions map[Permission]bool
@@ -48,6 +52,10 @@ var (
 			EventReadPermission:         true,
 			EventUpdatePermission:       true,
 			EventWritePermission:        true,
+			AddClubUser:                 true,
+			DeleteClubUser:              true,
+			UpdateClubUser:              true,
+			ReadClubUser:                true,
 		},
 	}
 	OwnerRole = Role{
@@ -69,6 +77,10 @@ var (
 			EventReadPermission:         true,
 			EventUpdatePermission:       true,
 			EventWritePermission:        true,
+			AddClubUser:                 true,
+			DeleteClubUser:              true,
+			UpdateClubUser:              true,
+			ReadClubUser:                true,
 		},
 	}
 	SocialAdminRole = Role{

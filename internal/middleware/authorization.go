@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"database/sql"
 	"net/http"
 
@@ -63,7 +64,11 @@ func CheckPermission(authService *AuthorizationService, permission permissions.P
 				return
 			}
 
-			next.ServeHTTP(w, r)
+			ctx := r.Context()
+			ctx = context.WithValue(ctx, "userRole", role)
+			ctx = context.WithValue(ctx, "userId", userID)
+			ctx = context.WithValue(ctx, "clubId", clubID)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }

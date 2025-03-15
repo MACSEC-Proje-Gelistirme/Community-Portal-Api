@@ -88,3 +88,30 @@ func (c *ClubUserRepository) DeleteAllClubRoles(clubID string) error {
 
 	return nil
 }
+
+func (c *ClubUserRepository) DeleteClubRole(clubID string, userID string) error {
+	_, err := c.db.Exec(`
+		DELETE FROM club_roles 
+		WHERE club_id = $1 AND user_id = $2`,
+		clubID, userID,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *ClubUserRepository) UpdateClubRole(clubID string, userID string, role string) error {
+	_, err := c.db.Exec(`
+		UPDATE club_roles 
+		SET role = $3, updated_at = $4
+		WHERE club_id = $1 AND user_id = $2`,
+		clubID, userID, role, time.Now(),
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
