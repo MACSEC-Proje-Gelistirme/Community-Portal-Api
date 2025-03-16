@@ -25,11 +25,11 @@ func (r *Router) NewRouter() *mux.Router {
 	authService := middleware.NewAuthorizationService(r.db)
 
 	router.Use(middleware.CorsMiddleware)
+	router.HandleFunc("/user", r.CreateUser).Methods(http.MethodPost, http.MethodOptions)
 
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.EnsureValidToken)
 
-	protected.HandleFunc("/user", r.CreateUser).Methods(http.MethodPost, http.MethodOptions)
 	protected.HandleFunc("/club-user", r.GetClubWithUserID).Methods(http.MethodGet, http.MethodOptions)
 	protected.HandleFunc("/club-user", middleware.CheckPermission(authService, permissions.AddClubUser)(r.AddClubUser)).Methods(http.MethodPost, http.MethodOptions)
 	protected.HandleFunc("/club-user", middleware.CheckPermission(authService, permissions.DeleteClubUser)(r.RemoveClubUser)).Methods(http.MethodDelete, http.MethodOptions)
