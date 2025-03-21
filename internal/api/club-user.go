@@ -163,3 +163,70 @@ func (ro *Router) UpdateClubUserRole(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, map[string]bool{"success": true})
 }
+
+func (ro *Router) GetUserClubsWithRoles(w http.ResponseWriter, r *http.Request) {
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "claims not found")
+		return
+	}
+
+	userID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "user id not found")
+		return
+	}
+
+	clubUserRepository := repository.NewClubUserRepository(ro.db)
+
+	clubs, err := clubUserRepository.GetUserClubsWithRoles(userID)
+	if err != nil {
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, clubs)
+}
+
+func (ro *Router) GetClubDetailsWithMembers(w http.ResponseWriter, r *http.Request) {
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "claims not found")
+		return
+	}
+
+	userID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "user id not found")
+		return
+	}
+
+	clubID := r.Header.Get("id")
+	if clubID == "" {
+		utils.JSONError(w, http.StatusBadRequest, "club id is required")
+		return
+	}
+
+	clubUserRepository := repository.NewClubUserRepository(ro.db)
+
+	// Check if user has access to this club
+	_, err := clubUserRepository.GetUserRole(clubID, userID)
+	if err != nil {
+		utils.JSONError(w, http.StatusForbidden, "access denied")
+		return
+	}
+
+	// Get club details and members
+	club, members, err := clubUserRepository.GetClubDetailsWithMembers(clubID)
+	if err != nil {
+		utils.JSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response := models.ClubDetailsResponse{
+		Club:    *club,
+		Members: members,
+	}
+
+	utils.JSONResponse(w, http.StatusOK, response)
+}

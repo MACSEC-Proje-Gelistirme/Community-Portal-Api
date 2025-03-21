@@ -26,29 +26,27 @@ func (c *ClubUserRepository) GetUserRole(clubID, userID string) (string, error) 
 	return role, nil
 }
 
-func (c *ClubUserRepository) GetClubsWithUserID(userID string) ([]models.Club, error) {
-	var clubs []models.Club
+func (c *ClubUserRepository) GetClubsWithUserID(userID string) ([]models.ClubWithRole, error) {
+	var clubs []models.ClubWithRole
 
 	rows, err := c.db.Query(`
-		SELECT c.id, c.name, c.description, c.email, c.member_count, c.created_at, c.updated_at
+		SELECT c.id, c.name, c.description, c.email, cr.role
 		FROM clubs c
 		JOIN club_roles cr ON c.id = cr.club_id
-		WHERE cr.user_id = $1;`, userID)
+		WHERE cr.user_id = $1 AND cr.role != 'member';`, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var club models.Club
+		var club models.ClubWithRole
 		err := rows.Scan(
 			&club.ID,
 			&club.Name,
 			&club.Description,
 			&club.Email,
-			&club.MemberCount,
-			&club.CreatedAt,
-			&club.UpdatedAt,
+			&club.Role,
 		)
 		if err != nil {
 			return nil, err
@@ -114,4 +112,91 @@ func (c *ClubUserRepository) UpdateClubRole(clubID string, userID string, role s
 	}
 
 	return nil
+}
+
+func (c *ClubUserRepository) GetUserClubsWithRoles(userID string) ([]models.UserClubWithRole, error) {
+	var clubs []models.UserClubWithRole
+
+	rows, err := c.db.Query(`
+		SELECT c.id, c.name, c.description, cr.role
+		FROM clubs c
+		JOIN club_roles cr ON c.id = cr.club_id
+		WHERE cr.user_id = $1;`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var club models.UserClubWithRole
+		err := rows.Scan(
+			&club.ClubID,
+			&club.ClubName,
+			&club.Description,
+			&club.Role,
+		)
+		if err != nil {
+			return nil, err
+		}
+		clubs = append(clubs, club)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return clubs, nil
+}
+
+func (c *ClubUserRepository) GetClubDetailsWithMembers(clubID string) (*models.Club, []models.ClubMember, error) {
+	// Get club details
+	var club models.Club
+	err := c.db.QueryRow(`
+		SELECT id, name, description, email, member_count, created_at, updated_at
+		FROM clubs
+		WHERE id = $1`, clubID).Scan(
+		&club.ID,
+		&club.Name,
+		&club.Description,
+		&club.Email,
+		&club.MemberCount,
+		&club.CreatedAt,
+		&club.UpdatedAt,
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Get club members
+	rows, err := c.db.Query(`
+		SELECT u.id, u.first_name, u.last_name, u.email, cr.role
+		FROM users u
+		JOIN club_roles cr ON u.id = cr.user_id
+		WHERE cr.club_id = $1`, clubID)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+
+	var members []models.ClubMember
+	for rows.Next() {
+		var member models.ClubMember
+		err := rows.Scan(
+			&member.UserID,
+			&member.FirstName,
+			&member.LastName,
+			&member.Email,
+			&member.Role,
+		)
+		if err != nil {
+			return nil, nil, err
+		}
+		members = append(members, member)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, nil, err
+	}
+
+	return &club, members, nil
 }
