@@ -201,7 +201,7 @@ func (ro *Router) GetClubDetailsWithMembers(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	clubID := r.Header.Get("id")
+	clubID := r.Header.Get("club-id")
 	if clubID == "" {
 		utils.JSONError(w, http.StatusBadRequest, "club id is required")
 		return

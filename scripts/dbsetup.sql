@@ -4,7 +4,18 @@ CREATE DATABASE community;
 
 GRANT ALL PRIVILEGES ON DATABASE community TO community; */
 
-/* You need to reconnect db before next line with user community and db community. */
+/* You need to reconnect db before next line with user community and db community. */DROP TABLE IF EXISTS mails CASCADE;
+DROP TABLE IF EXISTS attended_events CASCADE;
+DROP TABLE IF EXISTS likes CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS gallery_posts CASCADE;
+DROP TABLE IF EXISTS feed_posts CASCADE;
+DROP TABLE IF EXISTS club_roles CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS clubs CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+
 
 CREATE TABLE IF NOT EXISTS users  (
    id  varchar PRIMARY KEY,
@@ -32,9 +43,10 @@ CREATE TABLE IF NOT EXISTS  clubs  (
 CREATE TABLE IF NOT EXISTS events  (
    id  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
    club_id  UUID,
-   name  varchar,
+   title  varchar,
    description  varchar,
-   date  timestamp,
+   start_date  timestamp,
+   end_date timestamp,
    tags  varchar,
    location  varchar,
    created_at  timestamp,

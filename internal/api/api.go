@@ -37,6 +37,13 @@ func (r *Router) NewRouter() *mux.Router {
 
 	protected.HandleFunc("/club-user/details", r.GetClubDetailsWithMembers).Methods(http.MethodGet, http.MethodOptions)
 
+	// Event endpoints
+	protected.HandleFunc("/event", middleware.CheckPermission(authService, permissions.EventWritePermission)(r.CreateEvent)).Methods(http.MethodPost, http.MethodOptions)
+	protected.HandleFunc("/event", r.GetEvent).Methods(http.MethodGet, http.MethodOptions)
+	protected.HandleFunc("/events", r.GetAllEvents).Methods(http.MethodGet, http.MethodOptions)
+	protected.HandleFunc("/event", middleware.CheckPermission(authService, permissions.EventUpdatePermission)(r.UpdateEvent)).Methods(http.MethodPut, http.MethodOptions)
+	protected.HandleFunc("/event", middleware.CheckPermission(authService, permissions.EventDeletePermission)(r.DeleteEvent)).Methods(http.MethodDelete, http.MethodOptions)
+
 	// Club endpoints
 	protected.HandleFunc("/club", r.CreateClub).Methods(http.MethodPost, http.MethodOptions)
 	protected.HandleFunc("/club", r.GetClub).Methods(http.MethodGet, http.MethodOptions)
